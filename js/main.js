@@ -43,7 +43,6 @@ const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navLinks = document.getElementById('navLinks');
 const scrollTopBtn = document.getElementById('scrollTop');
 const contactForm = document.getElementById('contactForm');
-const paymentForm = document.getElementById('paymentForm');
 
 // ===== Mobile Menu Toggle =====
 if (mobileMenuBtn) {
@@ -183,76 +182,6 @@ if (contactForm) {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
-    });
-}
-
-// ===== Payment Form Handling =====
-if (paymentForm) {
-    paymentForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Get form data
-        const payerName = document.getElementById('payerName').value;
-        const payerEmail = document.getElementById('payerEmail').value;
-        const serviceSelected = document.getElementById('serviceSelected').value;
-        const paymentAmount = document.getElementById('paymentAmount').value;
-        const paymentNotes = document.getElementById('paymentNotes').value;
-
-        // Validation
-        if (!payerName || !payerEmail || !serviceSelected || !paymentAmount) {
-            showNotification('Please fill in all required fields', 'error');
-            return;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(payerEmail)) {
-            showNotification('Please enter a valid email address', 'error');
-            return;
-        }
-
-        // Get pricing info
-        const pricingDetails = PRICING_INFO[serviceSelected] || { name: serviceSelected, features: [] };
-        const receiptNumber = 'BTS-' + Date.now().toString().slice(-8);
-        const currentDate = new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-
-        // Create email subject and body for payment confirmation
-        const subject = `Payment Confirmation - ${payerName} - Receipt #${receiptNumber}`;
-        const body = `PAYMENT CONFIRMATION
-========================
-
-Receipt Number: ${receiptNumber}
-Date: ${currentDate}
-
-CLIENT INFORMATION:
-Name: ${payerName}
-Email: ${payerEmail}
-
-PAYMENT DETAILS:
-Service: ${pricingDetails.name || serviceSelected}
-Amount Paid: $${paymentAmount}
-Payment Method: Zelle
-
-Features Included:
-${pricingDetails.features.map(f => '- ' + f).join('\n')}
-
-Additional Notes: ${paymentNotes || 'None'}
-
-========================
-Bhatia Tax Services
-Email: ${BUSINESS_EMAIL}
-Phone: (714) 872-6910`;
-
-        // Open mailto link
-        const mailtoLink = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-
-        showNotification(`Opening email client - Receipt #${receiptNumber}`, 'success');
-        this.reset();
     });
 }
 
