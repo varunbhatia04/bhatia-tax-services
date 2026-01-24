@@ -15,25 +15,20 @@ const EMAILJS_RECEIPT_TEMPLATE = 'template_z5fd8ke';  // Template for payment re
 
 // ===== Pricing Information =====
 const PRICING_INFO = {
-    'Individual - $75': {
-        name: 'Individual Tax Filing',
-        price: 75,
-        features: ['Single ITR Filing', 'W-2 Income', 'Standard Deductions', 'E-Filing', 'Email Support']
+    'Starter - $100': {
+        name: 'Starter Package',
+        price: 100,
+        features: ['Individual W-2 Tax Return Only']
     },
-    'Professional - $99': {
-        name: 'Professional Tax Filing',
-        price: 99,
-        features: ['Complex ITR Filing', 'Multiple Income Sources', 'Itemized Deductions', 'Investment Income', 'Rental Income', 'Priority Support', 'Tax Planning Consultation']
+    'Standard - $150': {
+        name: 'Standard Package',
+        price: 150,
+        features: ['W-2 Tax Returns', '1099 Forms', 'Schedule C Returns']
     },
-    'Tax Refund': {
-        name: 'Tax Refund Services',
-        price: 'Custom',
-        features: ['Refund Maximization', 'Deduction Analysis', 'Credit Identification', 'Fast Processing']
-    },
-    'Financial Services': {
-        name: 'Financial Services',
-        price: 'Custom',
-        features: ['Excel Sheet Management', 'Financial Data Entry', 'Document Organization', 'Report Preparation']
+    'Premium - $200': {
+        name: 'Premium Package',
+        price: 200,
+        features: ['W-2 Tax Returns', '1099 / Schedule C Returns', 'Gambling Income', 'Investment Income']
     },
     'Other': {
         name: 'Custom Service',
