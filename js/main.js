@@ -1,6 +1,18 @@
 // ===== Configuration =====
 const BUSINESS_EMAIL = 'varunbhatia2004@gmail.com';
 
+// ===== EmailJS Configuration =====
+const EMAILJS_PUBLIC_KEY = 'LdBVqtPcvBKvH5vjC';
+const EMAILJS_SERVICE_ID = 'service_t3zap0i';
+const EMAILJS_CONTACT_TEMPLATE = 'template_tk2kfwf';
+
+// Initialize EmailJS
+(function() {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+})();
+
 // ===== Pricing Information =====
 const PRICING_INFO = {
     'Starter - $100': {
@@ -108,7 +120,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // ===== Contact Form Handling =====
 if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         // Get form data
@@ -136,28 +148,41 @@ if (contactForm) {
         };
         const serviceName = serviceNames[data.service] || data.service;
 
-        // Create email subject and body
-        const subject = `New Inquiry from ${data.name} - ${serviceName}`;
-        const body = `NEW CLIENT INQUIRY
-========================
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.disabled = true;
 
-Name: ${data.name}
-Email: ${data.email}
-Phone: ${data.phone || 'Not provided'}
-Service Interested: ${serviceName}
+        // Prepare email parameters for EmailJS
+        const templateParams = {
+            to_email: BUSINESS_EMAIL,
+            from_name: data.name,
+            from_email: data.email,
+            phone: data.phone || 'Not provided',
+            service: serviceName,
+            message: data.message,
+            date: new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        };
 
-Message:
-${data.message}
-
-========================
-Sent from Bhatia Tax Services Website`;
-
-        // Open mailto link
-        const mailtoLink = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-
-        showNotification('Opening your email client to send the message...', 'success');
-        this.reset();
+        try {
+            // Send email via EmailJS
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONTACT_TEMPLATE, templateParams);
+            showNotification('Thank you! Your message has been sent successfully. We will get back to you soon.', 'success');
+            this.reset();
+        } catch (error) {
+            console.error('Email error:', error);
+            showNotification('Failed to send message. Please try again or contact us directly.', 'error');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
     });
 }
 

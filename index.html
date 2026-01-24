@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -39,16 +41,11 @@
                 <p>For W-2,Self Employed, and Students.</p>
                 <div class="hero-buttons">
                     <a href="#contact" class="btn btn-primary>Get Free Consultation</a>
-                    <a href="#services" class="btn btn-secondary">Our Services</a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number">30+</span>
                         <span class="stat-label">Trusted Clients</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">2+</span>
-                        <span class="stat-label">Years Experience</span>
                     </div>
                 </div>
             </div>
@@ -68,7 +65,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <h2>About Varun Bhatia</h2>
-                    <p class="lead">A Certified Tax Professional (EFIN: 308942) experience in tax planning, accounting and serving in US Army.</p>
+                    <p class="lead">A Certified Tax Professional experience in tax planning, accounting and serving in US Army.</p>
                     <p>I founded this practice with a simple mission: to provide personalized, accurate, and affordable tax services to individuals. With a deep understanding of tax laws and a commitment to staying updated with the latest regulations, I ensure my clients always receive the best possible advice and service.</p>
                     <div class="about-features">
                         <div class="about-feature">
@@ -202,41 +199,6 @@
                             <li>Take a screenshot for your records</li>
                         </ol>
                     </div>
-                </div>
-                <div class="payment-info">
-                    <h3>Confirm Your Payment</h3>
-                    <p style="margin-bottom: 1rem; color: #64748b;">After making your Zelle payment, fill out this form to receive your receipt.</p>
-                    <form class="payment-form" id="paymentForm">
-                        <div class="form-group">
-                            <label for="payerName">Full Name *</label>
-                            <input type="text" id="payerName" name="payerName" required placeholder="Your full name">
-                        </div>
-                        <div class="form-group">
-                            <label for="payerEmail">Email Address *</label>
-                            <input type="email" id="payerEmail" name="payerEmail" required placeholder="your@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="serviceSelected">Service Paid For *</label>
-                            <select id="serviceSelected" name="serviceSelected" required>
-                                <option value="">Select service</option>
-                                <option value="Starter - $100">Starter (W-2 Only) - $100</option>
-                                <option value="Standard - $150">Standard (W-2, 1099, Schedule C) - $150</option>
-                                <option value="Premium - $200">Premium (All Returns + Investments) - $200</option>
-                                <option value="Other">Other Service</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="paymentAmount">Amount Paid ($) *</label>
-                            <input type="number" id="paymentAmount" name="paymentAmount" required placeholder="0.00" min="1" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="paymentNotes">Additional Notes</label>
-                            <textarea id="paymentNotes" name="paymentNotes" rows="2" placeholder="Any additional information..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <i class="fas fa-receipt"></i> Get Receipt
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
