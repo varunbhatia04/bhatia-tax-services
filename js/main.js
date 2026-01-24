@@ -141,9 +141,8 @@ if (contactForm) {
 
         // Get service display name
         const serviceNames = {
-            'w2-only': 'W-2 Only',
-            '1099-schedule-c': '1099 / Schedule C',
-            'gambling-income': 'Gambling Income'
+            'w2-only': 'General Consultation',
+            '1099-schedule-c': 'Tax Filing'
         };
         const serviceName = serviceNames[data.service] || data.service;
 
