@@ -1,17 +1,5 @@
-// ===== EmailJS Configuration =====
-// IMPORTANT: Replace these with your actual EmailJS credentials
-// Sign up at https://www.emailjs.com/ (free: 200 emails/month)
-const EMAILJS_PUBLIC_KEY = 'LdBVqtPcvBKvH5vjC';  // Get from EmailJS Dashboard > Account > API Keys
-const EMAILJS_SERVICE_ID = 'service_t3zap0i';  // Get from EmailJS Dashboard > Email Services
-const EMAILJS_CONTACT_TEMPLATE = 'template_tk2kfwf';  // Template for contact form
-const EMAILJS_RECEIPT_TEMPLATE = 'template_z5fd8ke';  // Template for payment receipts
-
-// Initialize EmailJS
-(function() {
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-    }
-})();
+// ===== Configuration =====
+const BUSINESS_EMAIL = 'varunbhatia2004@gmail.com';
 
 // ===== Pricing Information =====
 const PRICING_INFO = {
@@ -120,7 +108,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // ===== Contact Form Handling =====
 if (contactForm) {
-    contactForm.addEventListener('submit', async function(e) {
+    contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Get form data
@@ -140,71 +128,43 @@ if (contactForm) {
             return;
         }
 
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitBtn.disabled = true;
-
-        // Get pricing info for selected service
-        const serviceKey = Object.keys(PRICING_INFO).find(key =>
-            key.toLowerCase().includes(data.service.replace('-', ' '))
-        ) || data.service;
-        const pricingDetails = PRICING_INFO[serviceKey] || { name: data.service, price: 'Contact for quote', features: [] };
-
-        // Prepare email parameters
-        const templateParams = {
-            to_email: 'varunbhatia2004@gmail.com',
-            from_name: data.name,
-            from_email: data.email,
-            phone: data.phone || 'Not provided',
-            service: data.service,
-            service_name: pricingDetails.name,
-            service_price: typeof pricingDetails.price === 'number' ? `$${pricingDetails.price}` : pricingDetails.price,
-            service_features: pricingDetails.features.join(', '),
-            message: data.message,
-            date: new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+        // Get service display name
+        const serviceNames = {
+            'tax-filing': 'Tax Filing (ITR)',
+            'tax-refund': 'Tax Refund Services',
+            'financial-services': 'Financial Services',
+            'consultation': 'General Consultation'
         };
+        const serviceName = serviceNames[data.service] || data.service;
 
-        try {
-            // Check if EmailJS is properly configured
-            if (typeof emailjs === 'undefined' || EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-                // Fallback: Use mailto link
-                const mailtoLink = `mailto:varunbhatia2004@gmail.com?subject=New Inquiry from ${data.name} - ${data.service}&body=Name: ${data.name}%0D%0AEmail: ${data.email}%0D%0APhone: ${data.phone || 'Not provided'}%0D%0AService: ${data.service}%0D%0APrice: ${templateParams.service_price}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(data.message)}`;
-                window.location.href = mailtoLink;
-                showNotification('Opening your email client to send the message...', 'info');
-                this.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                return;
-            }
+        // Create email subject and body
+        const subject = `New Inquiry from ${data.name} - ${serviceName}`;
+        const body = `NEW CLIENT INQUIRY
+========================
 
-            // Send email via EmailJS
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONTACT_TEMPLATE, templateParams);
-            showNotification('Thank you! Your message has been sent successfully. We will get back to you soon.', 'success');
-            this.reset();
-        } catch (error) {
-            console.error('Email error:', error);
-            // Fallback to mailto
-            const mailtoLink = `mailto:varunbhatia2004@gmail.com?subject=New Inquiry from ${data.name} - ${data.service}&body=Name: ${data.name}%0D%0AEmail: ${data.email}%0D%0APhone: ${data.phone || 'Not provided'}%0D%0AService: ${data.service}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(data.message)}`;
-            window.location.href = mailtoLink;
-            showNotification('Opening your email client as a backup method...', 'info');
-        } finally {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone || 'Not provided'}
+Service Interested: ${serviceName}
+
+Message:
+${data.message}
+
+========================
+Sent from Bhatia Tax Services Website`;
+
+        // Open mailto link
+        const mailtoLink = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+
+        showNotification('Opening your email client to send the message...', 'success');
+        this.reset();
     });
 }
 
 // ===== Payment Form Handling =====
 if (paymentForm) {
-    paymentForm.addEventListener('submit', async function(e) {
+    paymentForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Get form data
@@ -226,11 +186,6 @@ if (paymentForm) {
             return;
         }
 
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending Receipt...';
-        submitBtn.disabled = true;
-
         // Get pricing info
         const pricingDetails = PRICING_INFO[serviceSelected] || { name: serviceSelected, features: [] };
         const receiptNumber = 'BTS-' + Date.now().toString().slice(-8);
@@ -241,130 +196,39 @@ if (paymentForm) {
             day: 'numeric'
         });
 
-        // Prepare email parameters for receipt
-        const templateParams = {
-            to_email: payerEmail,
-            to_name: payerName,
-            receipt_number: receiptNumber,
-            service_name: pricingDetails.name || serviceSelected,
-            service_features: pricingDetails.features.join(', '),
-            amount: paymentAmount,
-            payment_method: 'Zelle',
-            payment_date: currentDate,
-            notes: paymentNotes || 'None',
-            business_name: 'Bhatia Tax Services',
-            business_email: 'varunbhatia2004@gmail.com',
-            business_phone: '(714) 872-6910',
-            business_address: '8149 Santa Inez Way, Buena Park, CA 92831'
-        };
+        // Create email subject and body for payment confirmation
+        const subject = `Payment Confirmation - ${payerName} - Receipt #${receiptNumber}`;
+        const body = `PAYMENT CONFIRMATION
+========================
 
-        // Also send notification to business owner
-        const ownerNotificationParams = {
-            to_email: 'varunbhatia2004@gmail.com',
-            from_name: payerName,
-            from_email: payerEmail,
-            service: serviceSelected,
-            amount: paymentAmount,
-            receipt_number: receiptNumber,
-            notes: paymentNotes || 'None',
-            date: currentDate
-        };
-
-        try {
-            // Check if EmailJS is properly configured
-            if (typeof emailjs === 'undefined' || EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-                // Fallback: Show receipt details and use mailto
-                const receiptMessage = `
-PAYMENT RECEIPT - ${receiptNumber}
-================================
-Bhatia Tax Services
+Receipt Number: ${receiptNumber}
 Date: ${currentDate}
 
-BILL TO:
-${payerName}
-${payerEmail}
+CLIENT INFORMATION:
+Name: ${payerName}
+Email: ${payerEmail}
 
-SERVICE: ${pricingDetails.name || serviceSelected}
-AMOUNT PAID: $${paymentAmount}
-PAYMENT METHOD: Zelle
+PAYMENT DETAILS:
+Service: ${pricingDetails.name || serviceSelected}
+Amount Paid: $${paymentAmount}
+Payment Method: Zelle
 
 Features Included:
 ${pricingDetails.features.map(f => '- ' + f).join('\n')}
 
-Notes: ${paymentNotes || 'None'}
+Additional Notes: ${paymentNotes || 'None'}
 
-Thank you for your business!
-================================
+========================
 Bhatia Tax Services
-Email: varunbhatia2004@gmail.com
-Phone: (714) 872-6910
-`;
-                // Open mailto to send to owner
-                const mailtoLink = `mailto:varunbhatia2004@gmail.com?subject=Payment Received - ${payerName} - ${receiptNumber}&body=${encodeURIComponent(`Payment Confirmation\n\nClient: ${payerName}\nEmail: ${payerEmail}\nService: ${serviceSelected}\nAmount: $${paymentAmount}\nReceipt #: ${receiptNumber}\nNotes: ${paymentNotes || 'None'}`)}`;
-                window.open(mailtoLink, '_blank');
+Email: ${BUSINESS_EMAIL}
+Phone: (714) 872-6910`;
 
-                // Show receipt to user
-                showReceiptModal(receiptMessage, payerEmail);
-                showNotification('Receipt generated! Check the popup for your receipt details.', 'success');
-                this.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                return;
-            }
+        // Open mailto link
+        const mailtoLink = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
 
-            // Send receipt to customer
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_RECEIPT_TEMPLATE, templateParams);
-
-            // Send notification to business owner
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONTACT_TEMPLATE, ownerNotificationParams);
-
-            showNotification(`Receipt sent to ${payerEmail}! Receipt #: ${receiptNumber}`, 'success');
-            this.reset();
-        } catch (error) {
-            console.error('Email error:', error);
-            // Fallback
-            showNotification('Receipt generated! Please check your email or contact us if not received.', 'info');
-        } finally {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
-    });
-}
-
-// ===== Receipt Modal =====
-function showReceiptModal(receiptText, email) {
-    // Remove existing modal
-    const existingModal = document.getElementById('receiptModal');
-    if (existingModal) existingModal.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'receiptModal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10001;
-    `;
-    modal.innerHTML = `
-        <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
-            <h3 style="margin-bottom: 1rem; color: #1e40af;"><i class="fas fa-receipt"></i> Your Payment Receipt</h3>
-            <pre style="background: #f8fafc; padding: 1rem; border-radius: 8px; font-size: 0.875rem; white-space: pre-wrap; overflow-x: auto;">${receiptText}</pre>
-            <p style="margin-top: 1rem; font-size: 0.875rem; color: #64748b;">A copy has been prepared for ${email}. Please save or print this receipt for your records.</p>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <button onclick="window.print()" style="flex: 1; padding: 0.75rem; background: #1e40af; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fas fa-print"></i> Print</button>
-                <button onclick="document.getElementById('receiptModal').remove()" style="flex: 1; padding: 0.75rem; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer;">Close</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
+        showNotification(`Opening email client - Receipt #${receiptNumber}`, 'success');
+        this.reset();
     });
 }
 
