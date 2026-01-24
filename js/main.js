@@ -130,10 +130,9 @@ if (contactForm) {
 
         // Get service display name
         const serviceNames = {
-            'tax-filing': 'Tax Filing (ITR)',
-            'tax-refund': 'Tax Refund Services',
-            'financial-services': 'Financial Services',
-            'consultation': 'General Consultation'
+            'w2-only': 'W-2 Only',
+            '1099-schedule-c': '1099 / Schedule C',
+            'gambling-income': 'Gambling Income'
         };
         const serviceName = serviceNames[data.service] || data.service;
 
