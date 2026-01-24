@@ -2,9 +2,9 @@
 const BUSINESS_EMAIL = 'varunbhatia2004@gmail.com';
 
 // ===== EmailJS Configuration =====
-const EMAILJS_PUBLIC_KEY = 'LdBVqtPcvBKvH5vjC';
-const EMAILJS_SERVICE_ID = 'service_t3zap0i';
-const EMAILJS_CONTACT_TEMPLATE = 'template_tk2kfwf';
+const EMAILJS_PUBLIC_KEY = 'nwghr94ndEu5boKTq';
+const EMAILJS_SERVICE_ID = 'service_2c0d5xl';
+const EMAILJS_CONTACT_TEMPLATE = 'template_xij44ab';
 
 // Initialize EmailJS
 (function() {
